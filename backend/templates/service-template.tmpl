@@ -1,0 +1,40 @@
+{{define "service"}}
+  {{.Name}}:
+    image: {{.Image}}
+    container_name: {{.ContainerName}}
+
+    {{- if .EnvironmentVars}}
+    environment:
+    {{- range .EnvironmentVars}}
+      - {{.}}
+    {{- end}}
+    {{- end}}
+
+    {{- if .Ports}}
+    ports:
+    {{- range .Ports}}
+      - "{{.}}"
+    {{- end}}
+    {{- end}}
+
+    {{- if .Build}}
+    build:
+    {{- range .Build}}
+      - "{{.}}"
+    {{- end}}
+    {{- end}}
+
+    {{- if .DependsOn}}
+    depends_on:
+    {{- range .DependsOn}}
+      - {{.}}
+    {{- end}}
+    {{- end}}
+
+    {{- if .Networks}}
+    networks:
+    {{- range .Networks}}
+      - {{.}}
+    {{- end}}
+    {{- end}}
+{{- end}}

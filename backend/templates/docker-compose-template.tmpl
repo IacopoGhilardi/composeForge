@@ -1,0 +1,5 @@
+version: "{{.Version}}"
+services:
+{{- range .Services}}{{template "service" .}}{{end}}
+networks:
+{{- range .Networks}}{{template "network" .}}{{end}}

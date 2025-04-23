@@ -1,0 +1,11 @@
+{{define "network"}}
+  {{.Name}}:
+  {{- if .Driver }}
+    driver: {{.Driver}}
+  {{- end}}
+  {{- if .Extras}}
+    {{- range $key, $val := .Extras }}
+    {{$key}}: {{$val}}
+    {{- end}}
+  {{- end}}
+{{end}}

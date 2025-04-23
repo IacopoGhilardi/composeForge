@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  app:
+    image: myapp:latest
+    container_name: myapp-container
+    environment:
+      - ENV=production
+      - DEBUG=false
+    ports:
+      - "8080:80"
+    networks:
+      - default
+  app2:
+    image: myapp:latest
+    container_name: myapp-container
+    environment:
+      - ENV=production
+      - DEBUG=false
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+    networks:
+      - default
+networks:
+  network1:
+    driver: Stronzo
