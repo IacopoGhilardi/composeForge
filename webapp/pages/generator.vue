@@ -1,94 +1,108 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-[#020B2D]">
-    <!-- Header con logo e tema -->
-    <header class="border-b border-gray-200 dark:border-blue-900/40 bg-white dark:bg-[#020B2D]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-4">
-          <div class="flex items-center space-x-2">
-            <img src="" alt="ComposeForge" class="h-8 w-8" />
-            <span class="text-lg font-semibold text-gray-800 dark:text-white">ComposeForge</span>
-          </div>
-          <button 
-            @click="toggleTheme"
-            class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-blue-900/20"
-          >
-            <svg v-if="isDark" class="w-5 h-5 text-[#4D9FFF]" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
-            </svg>
-            <svg v-else class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-            </svg>
-          </button>
-        </div>
+  <div class="min-h-screen relative overflow-hidden transition-colors" :class="[
+    isDark ? 'bg-[#010B2D]' : 'bg-gray-50'
+  ]">
+    <!-- Background Decorations (solo in dark mode) -->
+    <div v-if="isDark" class="absolute inset-0">
+      <!-- Gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20"></div>
+      
+      <!-- Circles -->
+      <div class="absolute top-20 left-10 w-24 h-24 rounded-full bg-blue-500/5 blur-2xl"></div>
+      <div class="absolute top-40 right-20 w-32 h-32 rounded-full bg-purple-500/5 blur-2xl"></div>
+      
+      <!-- Dots Grid -->
+      <div class="absolute inset-0" 
+           style="background-image: radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.1) 1px, transparent 0);
+                  background-size: 40px 40px;">
       </div>
-    </header>
+    </div>
 
-    <!-- Main content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="mb-8">
-        <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">
-          Docker Compose Generator
-        </h1>
-        <p class="mt-2 text-gray-600 dark:text-blue-100/70">
-          Create your configuration with our interactive builder
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Left panel: Configuration -->
-        <div class="bg-white dark:bg-[#051042] rounded-lg shadow-sm dark:shadow-blue-900/20">
-          <!-- Tabs -->
-          <div class="border-b border-gray-200 dark:border-blue-900/40">
-            <nav class="flex -mb-px">
-              <button 
-                v-for="step in steps" 
-                :key="step.id"
-                @click="currentStep = step.id"
-                class="px-4 py-3 text-sm font-medium border-b-2 transition-colors"
-                :class="[
-                  currentStep === step.id 
-                    ? 'border-[#4D9FFF] text-[#4D9FFF] dark:text-[#4D9FFF]'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-blue-100/70 dark:hover:text-white'
-                ]"
-              >
-                {{ step.name }}
-              </button>
-            </nav>
-          </div>
-
-          <!-- Form content -->
-          <div class="p-6">
-            <component :is="currentStepComponent" />
-          </div>
+    <!-- Content -->
+    <div class="relative z-10">
+      <!-- Main Content -->
+      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Title Section -->
+        <div class="text-center mb-12">
+          <h1 class="text-4xl font-bold tracking-tight mb-4" :class="[
+            isDark 
+              ? 'bg-gradient-to-r from-white to-blue-100 text-transparent bg-clip-text'
+              : 'text-gray-900'
+          ]">
+            Docker Compose Generator
+          </h1>
+          <p :class="[
+            isDark ? 'text-blue-100/70' : 'text-gray-600'
+          ]">
+            Create your configuration with our interactive builder
+          </p>
         </div>
 
-        <!-- Right panel: Preview -->
-        <div class="bg-white dark:bg-[#051042] rounded-lg shadow-sm dark:shadow-blue-900/20">
-          <div class="p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-medium text-gray-800 dark:text-white">
-                Preview
-              </h2>
-              <button 
-                @click="copyToClipboard"
-                class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md
-                       text-gray-700 bg-gray-100 hover:bg-gray-200
-                       dark:text-white dark:bg-[#4D9FFF]/10 dark:hover:bg-[#4D9FFF]/20
-                       transition-colors duration-150"
-              >
-                Copy to Clipboard
-                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
-                </svg>
-              </button>
-            </div>
-            <div class="bg-gray-50 dark:bg-[#020B2D] rounded-lg p-4">
-              <pre class="text-sm font-mono text-gray-800 dark:text-blue-100/90 overflow-auto">{{ generatedConfig }}</pre>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Configuration Form -->
+          <div class="rounded-2xl shadow-sm transition-colors" :class="[
+            isDark 
+              ? 'bg-[#051042]/50 backdrop-blur-sm border border-blue-500/10' 
+              : 'bg-white border border-gray-200'
+          ]">
+            <div class="p-6">
+              <!-- Step Navigation -->
+              <nav class="flex space-x-1 mb-8 border-b border-blue-500/10">
+                <button 
+                  v-for="step in steps" 
+                  :key="step.id"
+                  @click="currentStep = step.id"
+                  class="px-6 py-3 text-base font-medium transition-colors relative"
+                  :class="[
+                    currentStep === step.id 
+                      ? 'text-[#4D9FFF]' 
+                      : 'text-blue-100/70 hover:text-white'
+                  ]"
+                >
+                  {{ step.name }}
+                  <div 
+                    v-if="currentStep === step.id"
+                    class="absolute bottom-0 left-0 w-full h-0.5 bg-[#4D9FFF]"
+                  ></div>
+                </button>
+              </nav>
+
+              <!-- Dynamic Form Content -->
+              <div class="min-h-[400px]">
+                <component :is="currentStepComponent" />
+              </div>
             </div>
           </div>
+
+          <!-- Preview Panel -->
+          <div class="rounded-2xl shadow-sm transition-colors" :class="[
+            isDark 
+              ? 'bg-[#051042]/50 backdrop-blur-sm border border-blue-500/10' 
+              : 'bg-white border border-gray-200'
+          ]">
+            <div class="p-6">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-white">Preview</h2>
+                <button 
+                  @click="copyToClipboard"
+                  class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl
+                         bg-blue-500/10 text-blue-100 hover:bg-blue-500/20 
+                         border border-blue-500/20 transition-colors duration-150"
+                >
+                  Copy to Clipboard
+                  <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="bg-[#020B2D] rounded-xl p-4 border border-blue-500/10">
+                <pre class="text-sm font-mono text-blue-100/90 overflow-auto">{{ generatedConfig }}</pre>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -99,14 +113,10 @@ import BaseConfig from '~/components/BaseConfig.vue'
 import ServicesConfig from '~/components/ServicesConfig.vue'
 import NetworksConfig from '~/components/NetworksConfig.vue'
 import EnvironmentConfig from '~/components/EnvironmentConfig.vue'
-
-const colorMode = useColorMode()
-const isDark = computed(() => colorMode.value === 'dark')
-const toggleTheme = () => {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
-}
+import { useTheme } from '~/composables/useTheme'
 
 const store = useDockerComposeStore()
+const { isDark } = useTheme()
 
 const steps = [
   { id: 'base', name: 'Base', component: BaseConfig },

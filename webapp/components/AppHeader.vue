@@ -1,58 +1,93 @@
 <template>
-  <header class="fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-200"
-    :class="[
-      isDark 
-        ? 'bg-gray-900/90 backdrop-blur border-gray-800' 
-        : 'bg-white/90 backdrop-blur border-gray-200'
-    ]">
+  <header class="sticky top-0 z-50 w-full transition-colors border-b" :class="[
+    isDark 
+      ? 'bg-[#010B2D]/80 backdrop-blur-sm border-blue-500/10' 
+      : 'bg-white/80 backdrop-blur-sm border-gray-200'
+  ]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <!-- Logo e navigazione sinistra -->
-        <div class="flex items-center space-x-8">
-          <NuxtLink to="/" class="flex items-center space-x-3">
-            <!-- Logo -->
-            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" 
-                :class="isDark ? 'stroke-indigo-400' : 'stroke-indigo-600'"
-                stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M14.5 4.5v2c0 1.1.9 2 2 2h2" 
-                :class="isDark ? 'stroke-indigo-400' : 'stroke-indigo-600'"
-                stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="text-xl font-bold" :class="isDark ? 'text-white' : 'text-gray-900'">
-              ComposeForge
-            </span>
-          </NuxtLink>
-        </div>
+      <div class="flex justify-between items-center h-16">
+        <!-- Logo -->
+        <NuxtLink to="/" class="flex items-center space-x-2">
+          <span class="text-xl font-bold transition-colors" :class="[
+            isDark ? 'text-white' : 'text-gray-900'
+          ]">ComposeForge</span>
+        </NuxtLink>
 
-        <!-- Navigazione destra -->
+        <!-- Right side navigation -->
         <div class="flex items-center space-x-6">
-          <!-- GitHub Link -->
-          <a href="https://github.com/yourusername/composeforge" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            :class="isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'"
-            class="transition-colors duration-200">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
-            </svg>
-          </a>
+          <!-- Navigation Links -->
+          <nav class="hidden md:flex items-center space-x-6">
+            <!-- <NuxtLink 
+              to="/docs" 
+              class="text-sm font-medium transition-colors" 
+              :class="[
+                isDark ? 'text-blue-100/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'
+              ]"
+            >
+              Documentation
+            </NuxtLink> -->
+            <!-- <NuxtLink 
+              to="/examples" 
+              class="text-sm font-medium transition-colors"
+              :class="[
+                isDark ? 'text-blue-100/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'
+              ]"
+            >
+              Examples
+            </NuxtLink> -->
+            <a 
+              href="https://github.com/IacopoGhilardi/composeForge" 
+              target="_blank"
+              class="text-sm font-medium transition-colors"
+              :class="[
+                isDark ? 'text-blue-100/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'
+              ]"
+            >
+              GitHub
+            </a>
+          </nav>
 
           <!-- Theme Toggle -->
           <button 
             @click="toggleTheme"
-            class="p-2 rounded-full transition-colors duration-200"
-            :class="isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'"
+            class="p-2 rounded-lg transition-colors"
+            :class="[
+              isDark 
+                ? 'bg-blue-500/10 hover:bg-blue-500/20' 
+                : 'bg-gray-100 hover:bg-gray-200'
+            ]"
+            aria-label="Toggle theme"
           >
-            <!-- Sun icon -->
-            <svg v-if="isDark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg 
+              v-if="isDark" 
+              class="w-5 h-5 text-[#4D9FFF]" 
+              fill="currentColor" 
+              viewBox="0 0 20 20"
+            >
+              <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
             </svg>
-            <!-- Moon icon -->
-            <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            <svg 
+              v-else 
+              class="w-5 h-5 text-gray-600" 
+              fill="currentColor" 
+              viewBox="0 0 20 20"
+            >
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
             </svg>
           </button>
+
+          <!-- Get Started Button -->
+          <NuxtLink
+            to="/generator"
+            class="hidden md:inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            :class="[
+              isDark 
+                ? 'bg-white text-[#010B2D] hover:bg-blue-50' 
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            ]"
+          >
+            Get Started
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -60,10 +95,5 @@
 </template>
 
 <script setup lang="ts">
-const colorMode = useColorMode()
-const isDark = computed(() => colorMode.value === 'dark')
-
-const toggleTheme = () => {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
-}
+const { isDark, toggleTheme } = useTheme()
 </script> 

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import yaml from 'js-yaml'
 
 interface Port {
   host: string
@@ -42,7 +43,8 @@ export const useDockerComposeStore = defineStore('dockerCompose', {
     } as BaseConfig,
     services: [] as Service[],
     networks: [] as Network[],
-    environmentVariables: [] as EnvVar[]
+    environment: [] as { key: string; value: string }[],
+    preview: ''
   }),
 
   actions: {
@@ -74,13 +76,51 @@ export const useDockerComposeStore = defineStore('dockerCompose', {
       this.networks.splice(index, 1)
     },
     addEnvironmentVariable() {
-      this.environmentVariables.push({
+      this.environment.push({
         key: '',
         value: ''
       })
     },
     removeEnvironmentVariable(index: number) {
-      this.environmentVariables.splice(index, 1)
+      this.environment.splice(index, 1)
+    },
+    updateEnvironment(variables: { key: string; value: string }[]) {
+      this.environment = variables
+      this.generatePreview()
+    },
+    generatePreview() {
+      const compose: any = {
+        version: this.baseConfig.version,
+        services: this.services.map(service => ({
+          name: service.name,
+          image: service.image,
+          containerName: service.containerName,
+          ports: service.ports.map(p => `${p.host}:${p.container}`),
+          environmentVars: service.environment.map(env => `${env.key}=${env.value}`),
+          networks: service.networks,
+          dependsOn: service.dependsOn
+        })),
+        networks: this.networks.map(network => ({
+          name: network.name,
+          driver: network.driver,
+          extras: network.enableIpv6 ? { 'enable_ipv6': 'true' } : undefined
+        }))
+      }
+
+      // Aggiungi environment se presente
+      if (this.environment.length > 0) {
+        const environment: Record<string, string> = {}
+        this.environment.forEach(variable => {
+          if (variable.key && variable.value) {
+            environment[variable.key] = variable.value
+          }
+        })
+        if (Object.keys(environment).length > 0) {
+          compose.environment = environment
+        }
+      }
+
+      this.preview = yaml.dump(compose)
     },
     generateDockerCompose() {
       // Convertiamo i dati nel formato richiesto dal backend
