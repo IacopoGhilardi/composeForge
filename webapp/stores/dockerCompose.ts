@@ -11,12 +11,45 @@ interface EnvVar {
   value: string
 }
 
+interface DockerfileConfig {
+  baseImage: string
+  baseImageTag: string
+  workdir: string
+  copy: Array<{ src: string; dest: string }>
+  run: string[]
+  cmd: string
+}
+
+interface Volume {
+  named: Array<{
+    name: string
+    mountPath: string
+  }>
+  binds: Array<{
+    source: string
+    target: string
+    mode: 'rw' | 'ro'
+  }>
+}
+
+interface BuildConfig {
+  context: string
+  args: Array<{
+    key: string
+    value: string
+  }>
+}
+
 interface Service {
   name: string
-  image: string
+  containerSource: 'image' | 'dockerfile' | 'build'
+  image?: string
+  build?: BuildConfig
+  volumes: Volume
+  dockerfile: DockerfileConfig
+  ports: Array<{ host: string; container: string }>
+  environment: Array<{ key: string; value: string }>
   containerName: string
-  ports: Port[]
-  environment: EnvVar[]
   networks: string[]
   dependsOn: string[]
 }
@@ -43,7 +76,6 @@ export const useDockerComposeStore = defineStore('dockerCompose', {
     } as BaseConfig,
     services: [] as Service[],
     networks: [] as Network[],
-    environment: [] as { key: string; value: string }[],
     preview: ''
   }),
 
@@ -54,10 +86,26 @@ export const useDockerComposeStore = defineStore('dockerCompose', {
     addService() {
       this.services.push({
         name: '',
-        image: '',
-        containerName: '',
+        containerSource: 'image',
+        volumes: {
+          named: [],
+          binds: []
+        },
+        build: {
+          context: '.',
+          args: []
+        },
+        dockerfile: {
+          baseImage: '',
+          baseImageTag: 'latest',
+          workdir: '/app',
+          copy: [],
+          run: [],
+          cmd: ''
+        },
         ports: [],
         environment: [],
+        containerName: '',
         networks: [],
         dependsOn: []
       })
@@ -75,52 +123,113 @@ export const useDockerComposeStore = defineStore('dockerCompose', {
     removeNetwork(index: number) {
       this.networks.splice(index, 1)
     },
-    addEnvironmentVariable() {
-      this.environment.push({
-        key: '',
-        value: ''
-      })
-    },
-    removeEnvironmentVariable(index: number) {
-      this.environment.splice(index, 1)
-    },
-    updateEnvironment(variables: { key: string; value: string }[]) {
-      this.environment = variables
-      this.generatePreview()
-    },
     generatePreview() {
       const compose: any = {
         version: this.baseConfig.version,
-        services: this.services.map(service => ({
-          name: service.name,
-          image: service.image,
-          containerName: service.containerName,
-          ports: service.ports.map(p => `${p.host}:${p.container}`),
-          environmentVars: service.environment.map(env => `${env.key}=${env.value}`),
-          networks: service.networks,
-          dependsOn: service.dependsOn
-        })),
-        networks: this.networks.map(network => ({
-          name: network.name,
-          driver: network.driver,
-          extras: network.enableIpv6 ? { 'enable_ipv6': 'true' } : undefined
-        }))
+        services: {},
+        volumes: {}
       }
 
-      // Aggiungi environment se presente
-      if (this.environment.length > 0) {
-        const environment: Record<string, string> = {}
-        this.environment.forEach(variable => {
-          if (variable.key && variable.value) {
-            environment[variable.key] = variable.value
+      this.services.forEach(service => {
+        if (service.name) {
+          compose.services[service.name] = {}
+
+          // Container source configuration
+          switch (service.containerSource) {
+            case 'image':
+              if (service.image) {
+                compose.services[service.name].image = service.image
+              }
+              break
+            case 'dockerfile':
+              compose.services[service.name].build = {
+                context: '.',
+                dockerfile: `Dockerfile.${service.name}`
+              }
+              break
+            case 'build':
+              if (service.build) {
+                compose.services[service.name].build = {
+                  context: service.build.context
+                }
+                if (service.build.args.length > 0) {
+                  compose.services[service.name].build.args = service.build.args.reduce(
+                    (acc, { key, value }) => {
+                      if (key && value) acc[key] = value
+                      return acc
+                    },
+                    {}
+                  )
+                }
+              }
+              break
           }
-        })
-        if (Object.keys(environment).length > 0) {
-          compose.environment = environment
+
+          // Volumes configuration
+          const volumes: string[] = []
+          
+          // Add named volumes
+          service.volumes.named.forEach(vol => {
+            if (vol.name && vol.mountPath) {
+              volumes.push(`${vol.name}:${vol.mountPath}`)
+              // Add to top-level volumes if not exists
+              if (!compose.volumes[vol.name]) {
+                compose.volumes[vol.name] = null
+              }
+            }
+          })
+
+          // Add bind mounts
+          service.volumes.binds.forEach(bind => {
+            if (bind.source && bind.target) {
+              volumes.push(`${bind.source}:${bind.target}:${bind.mode}`)
+            }
+          })
+
+          if (volumes.length > 0) {
+            compose.services[service.name].volumes = volumes
+          }
         }
+      })
+
+      // Remove empty volumes object
+      if (Object.keys(compose.volumes).length === 0) {
+        delete compose.volumes
       }
 
       this.preview = yaml.dump(compose)
+    },
+    generateDockerfile(service: Service): string {
+      const lines = []
+      
+      // Base image
+      lines.push(`FROM ${service.dockerfile.baseImage}:${service.dockerfile.baseImageTag}`)
+      
+      // Workdir
+      if (service.dockerfile.workdir) {
+        lines.push(`WORKDIR ${service.dockerfile.workdir}`)
+      }
+      
+      // Copy commands
+      service.dockerfile.copy.forEach(({ src, dest }) => {
+        if (src && dest) {
+          lines.push(`COPY ${src} ${dest}`)
+        }
+      })
+      
+      // Run commands
+      service.dockerfile.run.forEach(cmd => {
+        if (cmd) {
+          lines.push(`RUN ${cmd}`)
+        }
+      })
+      
+      // CMD
+      if (service.dockerfile.cmd) {
+        lines.push(`CMD ${service.dockerfile.cmd}`)
+      }
+      
+      return lines.join('\n')
     },
     generateDockerCompose() {
       // Convertiamo i dati nel formato richiesto dal backend
@@ -142,7 +251,6 @@ export const useDockerComposeStore = defineStore('dockerCompose', {
         }))
       }
 
-      // Per ora restituiamo una versione formattata JSON
       return JSON.stringify(composeData, null, 2)
     }
   }

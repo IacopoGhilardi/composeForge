@@ -13,9 +13,10 @@
         @click="store.addNetwork"
         class="px-4 py-2 rounded-lg transition-colors border"
         :class="[
-          isDark 
-            ? 'bg-[#4D9FFF]/10 border-[#4D9FFF]/20 text-[#4D9FFF] hover:bg-[#4D9FFF]/20' 
-            : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100'
+          'bg-dockerlight-accent2 dark:bg-docker-accent2',
+          'border-dockerlight-accent2 dark:border-docker-accent2',
+          'text-dockerlight-accent dark:text-docker-accent',
+          'hover:bg-dockerlight-accent dark:hover:bg-docker-accent'
         ]"
       >
         Add Network
@@ -25,9 +26,9 @@
     <div v-if="store.networks.length === 0" 
          class="text-center py-12 rounded-lg border transition-colors"
          :class="[
-           isDark 
-             ? 'bg-[#020B2D] border-blue-500/10 text-blue-100/70' 
-             : 'bg-gray-50 border-gray-200 text-gray-500'
+           'bg-dockerlight-card dark:bg-docker-card',
+           'border-dockerlight-border dark:border-docker-border',
+           'text-dockerlight-text2 dark:text-docker-text2'
          ]">
       <p>No networks defined yet. Click "Add Network" to begin.</p>
     </div>

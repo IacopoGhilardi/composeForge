@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen relative overflow-hidden transition-colors" 
-       :class="[isDark ? 'bg-[#020B2D]' : 'bg-gradient-to-b from-gray-50 to-white']">
+       :class="[isDark ? 'bg-docker-bg' : 'bg-gradient-to-b from-gray-50 to-white']">
     <!-- Decorative elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <!-- Soft gradient circles -->
@@ -30,17 +30,15 @@
       <!-- Hero section -->
       <div class="text-center max-w-5xl mx-auto px-4 pt-20 pb-16">
         <h1 class="text-5xl md:text-6xl font-bold tracking-tight">
-          <span :class="isDark ? 'text-white' : 'text-gray-800'">Create Docker Compose</span><br/>
-          <span class="text-blue-600">configurations easily</span>
+          <span class="text-dockerlight-text dark:text-docker-text">Create Docker Compose</span><br/>
+          <span class="text-dockerlight-accent dark:text-docker-accent">configurations easily</span>
         </h1>
-        <p class="mt-6 text-lg transition-colors" 
-           :class="isDark ? 'text-blue-100/70' : 'text-gray-600'">
+        <p class="mt-6 text-lg text-dockerlight-text2 dark:text-docker-text2 max-w-3xl mx-auto">
           Create production-ready Docker Compose configurations in minutes, not hours. No more manual editing of YAML files.
         </p>
         <div class="mt-10">
           <NuxtLink to="/generator" 
-            class="inline-flex items-center px-6 py-3 rounded-lg transition-colors"
-            :class="isDark ? 'bg-[#4D9FFF] text-white hover:bg-[#4D9FFF]/90' : 'bg-blue-600 text-white hover:bg-blue-700'">
+            class="inline-flex items-center px-6 py-3 rounded-lg bg-dockerlight-accent dark:bg-docker-accent text-white hover:bg-dockerlight-accent2 dark:hover:bg-docker-accent2 transition-colors">
             Start Building
             <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />

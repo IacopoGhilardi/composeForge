@@ -1,46 +1,21 @@
 <template>
-  <header class="sticky top-0 z-50 w-full transition-colors border-b" :class="[
-    isDark 
-      ? 'bg-[#010B2D]/80 backdrop-blur-sm border-blue-500/10' 
-      : 'bg-white/80 backdrop-blur-sm border-gray-200'
-  ]">
+  <header class="sticky top-0 z-50 w-full transition-colors border-b bg-dockerlight-card dark:bg-docker-card border-dockerlight-border dark:border-docker-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
-        <!-- Logo -->
         <NuxtLink to="/" class="flex items-center space-x-2">
           <span class="text-xl font-bold transition-colors" :class="[
             isDark ? 'text-white' : 'text-gray-900'
           ]">ComposeForge</span>
         </NuxtLink>
 
-        <!-- Right side navigation -->
         <div class="flex items-center space-x-6">
-          <!-- Navigation Links -->
           <nav class="hidden md:flex items-center space-x-6">
-            <!-- <NuxtLink 
-              to="/docs" 
-              class="text-sm font-medium transition-colors" 
-              :class="[
-                isDark ? 'text-blue-100/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'
-              ]"
-            >
-              Documentation
-            </NuxtLink> -->
-            <!-- <NuxtLink 
-              to="/examples" 
-              class="text-sm font-medium transition-colors"
-              :class="[
-                isDark ? 'text-blue-100/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'
-              ]"
-            >
-              Examples
-            </NuxtLink> -->
             <a 
-              href="https://github.com/IacopoGhilardi/composeForge" 
+              href="https://github.com/IacopoGhilardi/composeForge"
               target="_blank"
               class="text-sm font-medium transition-colors"
               :class="[
-                isDark ? 'text-blue-100/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'
+                isDark ? 'text-dockerlight-accent2 dark:text-docker-accent2 hover:text-white' : 'text-dockerlight-text2 dark:text-docker-text2 hover:text-gray-900'
               ]"
             >
               GitHub
@@ -53,14 +28,14 @@
             class="p-2 rounded-lg transition-colors"
             :class="[
               isDark 
-                ? 'bg-blue-500/10 hover:bg-blue-500/20' 
-                : 'bg-gray-100 hover:bg-gray-200'
+                ? 'bg-dockerlight-accent2 dark:bg-docker-accent2 hover:bg-dockerlight-accent2 dark:hover:bg-docker-accent2' 
+                : 'bg-dockerlight-accent dark:bg-docker-accent hover:bg-dockerlight-accent dark:hover:bg-docker-accent'
             ]"
             aria-label="Toggle theme"
           >
             <svg 
               v-if="isDark" 
-              class="w-5 h-5 text-[#4D9FFF]" 
+              class="w-5 h-5 text-dockerlight-accent dark:text-docker-accent" 
               fill="currentColor" 
               viewBox="0 0 20 20"
             >

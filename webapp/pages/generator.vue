@@ -112,7 +112,6 @@ import { useDockerComposeStore } from '~/stores/dockerCompose'
 import BaseConfig from '~/components/BaseConfig.vue'
 import ServicesConfig from '~/components/ServicesConfig.vue'
 import NetworksConfig from '~/components/NetworksConfig.vue'
-import EnvironmentConfig from '~/components/EnvironmentConfig.vue'
 import { useTheme } from '~/composables/useTheme'
 
 const store = useDockerComposeStore()
@@ -121,8 +120,7 @@ const { isDark } = useTheme()
 const steps = [
   { id: 'base', name: 'Base', component: BaseConfig },
   { id: 'services', name: 'Services', component: ServicesConfig },
-  { id: 'networks', name: 'Networks', component: NetworksConfig },
-  { id: 'environment', name: 'Environment', component: EnvironmentConfig }
+  { id: 'networks', name: 'Networks', component: NetworksConfig }
 ]
 
 const currentStep = ref('base')
@@ -139,9 +137,8 @@ const generatedConfig = computed(() => {
 const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(generatedConfig.value)
-    // TODO: Add success notification
   } catch (err) {
-    // TODO: Add error notification
+    console.error('Failed to copy to clipboard:', err)
   }
 }
 </script> 
